@@ -9,15 +9,30 @@
           tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         });
         </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script type="text/javascript" src="web.js"></script>
         <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     </head>
     <body>
+        <div class="navbar">
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#background">Background</a></li>
+                <li><a href="#computational-methods">Computational Methods</a></li>
+                <li><a href="#interim-report">Interim Report</a></li>
+                <li><a href="#parallelization">Parallelization of BFS</a></li>
+                <li><a href="#spmd-shared">SPMD shared memory with OpenMP</a></li>
+                <li><a href="#hybrid-spmd">Hybrid SPMD with OpenMP-MPI</a></li>
+                <li><a href="#advanced-features">Advanced features</a></li>
+                <li><a href="#references">References</a></li>
+            </ul>
+        </div>
         <div class="wrapper">
             <h1>Mapping out Trajectories of Charged Defects</h1>
             <h4>Rodrick Kuate Defo, Richard Wang</h4>
             <h4>Professor Manju Manjunathaiah</h4>
 
-            <h3>Introduction</h3>
+            <h3 id="introduction">Introduction</h3>
             <p>The promise of the nitrogen-vacany (NV) center in diamond as a system for implementing memory storage for a quantum computer has spawned interest in defect centers in related materials such as SiC. SiC is particularly interesting as it is a polymorphic material, exhibiting about 250 known polytypes, which imbues it with a degree of freedom unavailable in diamond.</p>
 
             <p>The three most common polytypes, 4H- and 6H-SiC and 3C-SiC, all have defects with spin relaxation times ranging from 8 to 24 ms at 20 K (with 4H-SiC being the highest) and coherence persists up to room temperature<sup>[<a href="#ref1">1</a>]</sup>. In addition to the long spin coherence, a key feature is the ability to optically address (write in and read out) the spin states. However, much of the luminescence or emission of the defects is diverted into transitions involving scattering processes (and is not purely from the desired spin transitions) at ambient temperatures. Indeed, only about 4% of luminescence is from the desired transitions<sup>[<a href="#ref2">2</a>]</sup>.</p>
@@ -26,12 +41,12 @@
 
             <hr/>
 
-            <h3>Background</h3>
+            <h3 id="background">Background</h3>
             <p>Work has already been done on obtaining barriers to diffusion and the vibrational frequencies that provide the directionality and time scale for the motion<sup>[<a href="#ref4">4</a>, <a href="#ref5">5</a>]</sup>, but these studies lack a comprehensive understanding of the potential diffusion pathways and as a result do not perform the kinetic Monte Carlo simulations necessary to truly establish diffusion pathways and probabilities with the Coulomb interaction.</p>
 
             <hr/>
 
-            <h3>Computational Methods</h3>
+            <h3 id="computational-methods">Computational Methods</h3>
             <p>There are two main stages to the calculation of the trajectory probability maps. In the first stage, density functional theory calculations will be carried out to obtain the barriers to diffusion for the various pathways and in the second stage kinetic Monte Carlo simulations will be carried out to map out trajectories. We have existing code for the second part in Matlab, which will be converted to C code. The kinetic Monte Carlo simulations will be carried out with Coulomb interaction and for 1D and 2D random walk test cases (to be compared with theoretical calculations). Without the Coulomb interaction the probability map will be calculated using a breadth first search down the tree of possible transitions (which is $O(log(N))$, where $N$ is the number of possible pathways).</p>
 
             <p>We introduce new notation here. Let
@@ -79,34 +94,41 @@
 
             <hr/>
 
-            <h3>Interim Report</h3>
+            <h3 id="interim-report">Interim Report</h3>
             <p>We were able to successfully get results for $N=4$, implying that we were able to successfully run BFS on a 12-ary tree with a depth of 4.</p>
+
             <div class="figure-wrapper">
-                <div class="caption">
-                    <img width="400" src="../images/2d%20random%20walk.gif">
-                    <img width="400" src="../images/probability%20map.gif">
-                    <p>Figure I: 2-d random walk</p>
-                    <p>Figure II: preprocessed probability map $(xy)$</p>
-                </div>
-                <hr/>
-                <div class="caption">
-                    <img width="400" src="../images/xy.gif">
-                    <img width="400" src="../images/xz.gif">
-                    <p>Figure III: averaged probability map $(xy)$</p>
-                    <p>Figure IV: averaged probability map $(xz)$</p>
-                </div>
-                <hr/>
-                <div class="caption">
-                    <img width="400" src="../images/efficiency.png">
-                    <img width="400" src="../images/speedup.png">
-                    <p>Figure V: efficiency</p>
-                    <p>Figure VI: speedup</p>
-                </div>
-                <div class="caption">
-                    <img width="400" src="../images/throughput.png">
-                    <br/>
-                    <p>Figure VII: throughput</p>
-                </div>
+                <figure>
+                    <img width="400" src="./images/2d%20random%20walk.gif">
+                    <figcaption>Figure I: 2-d random walk</figcaption>
+                </figure>
+                <figure>
+                    <img width="400" src="./images/probability%20map.gif">
+                    <figcaption>Figure II: preprocessed probability map $(xy)$</figcaption>
+                </figure>
+
+                <figure>
+                    <img width="400" src="./images/xy.gif">
+                    <figcaption>Figure III: averaged probability map $(xy)$</figcaption>
+                </figure>
+                <figure>
+                    <img width="400" src="./images/xz.gif">
+                    <figcaption>Figure IV: averaged probability map $(xz)$</figcaption>
+                </figure>
+
+                <figure>
+                    <img width="400" src="./images/efficiency.png">
+                    <figcaption>Figure V: efficiency</figcaption>
+                </figure>
+                <figure>
+                    <img width="400" src="./images/speedup.png">
+                    <figcaption>Figure VI: speedup</figcaption>
+                </figure>
+
+                <figure>
+                    <img width="400" src="./images/throughput.png">
+                    <figcaption>Figure VII: throughput</figcaption>
+                </figure>
             </div>
 
             <p>We initially ran BFS in the lattice with a recursive call, meaning we would traverse from one particle in the lattice to another, run BFS on the newly discovered particle, and so on. We were able to get some speedup on this initial model by adding an OpenMP for loop pragma to an area where we calculated cumulative probability of transitions. Additionally, we were able to get speedup by hand-unrolling the matrix-matrix and matrix-vector multiplications we were performing.</p>
@@ -117,7 +139,25 @@
 
             <hr/>
 
-            <h3>References</h3>
+            <h3 id="parallelization">Parallelization of BFS</h3>
+            <p>We initially used a recursive crawling method for performing the breadth-first search (BFS) required to map probabilities in the lattice. This method involved traversing to a particular position in the lattice and directly running our BFS function from that position (a recursive call). We found that applying OpenMP directives to the recursive portion was difficult, especially since the probability that a defect appeared in a particular position on the lattice likely depended on other probabilities which may not have been updated.</p>
+
+            <p>Instead, we aimed to change the model of how we traverse through the 12-ary tree. We were considering switching entirely to the matrix-vector multiplication method of BFS with the boolean semiring model, but instead we opted for a serial traversal of BFS that still adopted the semiring model. We use two different semirings - one for updating the probability and one for updating the position and time steps. This semiring model is described in more detail in the advanced features section. This made it easier for us to directly write parallelizing pragmas because our serial implementation resulted in several $\texttt{for}$ loops which are simple to parallelize.</p>
+
+            <h3 id="spmd-shared">SPMD shared memory with OpenMP</h3>
+            <p>We used the SPMD paradigm of parallelism in order to achieve initial speedup. We used the standard library for shared memory multiprocessing, OpenMP. When parallelizing $\texttt{for}$ loops, we used the standard compiler directive $\texttt{pragma omp parallel}$, designating shared matrices and iterators appropriately with the $\texttt{shared}$ and $\texttt{private}$ keywords.</p>
+
+            <h3 id="hybrid-spmd">Hybrid SPMD with OpenMP-MPI</h3>
+            <p>We used the common hybrid model of combining message passing with MPI with OpenMP. By splitting the work that needs to be done across several nodes, we can achieve further speedup.</p>
+
+            <h3 id="advanced-features">Advanced features</h3>
+            <p>One of the advanced features we used was to convert our initially recursive implementation of BFS to a model similar to the semiring model. The initial, immediate advantage to this was that we could convert a recursive implementation into a serial one, which is an advantage in the ease of parallelization.</p>
+
+            <p>A disclaimer is that we cannot use the pure boolean semiring $(\{0, 1\}, |, \&)$. The reason for this is that the boolean semiring is used for determining whether or not we are able to traverse to a particular node in BFS. We care about more than that - we care about the probability of transition to a certain point, the coordinates associated with those points, and the time steps required to reach those points. Because of this, using a pure semiring is not feasible.</p>
+
+            <p>However, there are several important takeaways from the boolean semiring model that we can use to construct our own implementation of BFS. One of them is that we <i>can</i> use a semiring - the semiring of $([0, \infty], +, \times)$, which will generally cover the cases we require for our lattice traversal. Another very important idea is the construction of a graph as a matrix. Initially, we were considering tree traversal in a context conducive to human understanding - traversing down a branch of the tree. But by converting our tree to a matrix representation, we were able to gain insight on how to construct a serial implementation of BFS and therefore parallelize this operation.</p>
+
+            <h3 id="references">References</h3>
             <ul>
                 <li><b><a name="ref1">[1]</a></b> A. L. Falk, B. B. Buckley, G. Calusine, W. F. Koehl, V. V. Dobrovitski, A. Politi, C. A. Zorman, P. X. L. Feng, and D. D. Awschalom, "Polytype control of spin qubits in silicon carbide," <i>Nature Communications</i>, vol. 4, p. 1819, 05 2013.</li>
                 <li><b><a name="ref2">[2]</a></b> I. Aharonovich, S. Castelletto, D. A. Simpson, C.-H. Su, A. D. Greentree, and S. Prawer, "Diamond-based single-photon emitters," <i>Reports on Progress in Physics</i>, vol. 74, no. 7, p. 076501, 2011.</li>
