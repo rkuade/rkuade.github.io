@@ -162,9 +162,23 @@
                     <img width="400" src="./images/throughput.png">
                     <figcaption>Figure VII: throughput</figcaption>
                 </figure>
+
+                <figure>
+                    <img width="400" src="./images/efficiency_s.png">
+                    <figcaption>Figure VIII: efficiency</figcaption>
+                </figure>
+                <figure>
+                    <img width="400" src="./images/speedup_s.png">
+                    <figcaption>Figure IX: speedup</figcaption>
+                </figure>
+
+                <figure>
+                    <img width="400" src="./images/throughput_s.png">
+                    <figcaption>Figure X: throughput</figcaption>
+                </figure>
             </div>
 
-            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup.</p>
+            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup. Figures V through VII give us the efficiency, speedup, and throughput for a variable number of cores given a fixed problem size, while figures VIII through X give us the efficiency, speedup, and throughput for a fixed number of cores given a variable problem size. In all of these graphs, the OMP-MPI hybrid solution is seen to be around as good as, if not far outperforming, the OpenMP solution.</p>
 
             <hr/>
 
