@@ -25,6 +25,8 @@
                 <li><a href="#hybrid-spmd">Hybrid SPMD with OpenMP-MPI</a></li>
                 <li><a href="#advanced-features">Advanced features</a></li>
                 <li><a href="#references">References</a></li>
+                <p>-</p>
+                <li><a href="https://github.com/rkuade/CS205-project" target="_blank">Project repository</a></li>
             </ul>
         </div>
         <div class="wrapper">
@@ -135,10 +137,8 @@
             <h3 id="spmd-shared">SPMD shared memory with OpenMP</h3>
             <p>We used the SPMD paradigm of parallelism in order to achieve initial speedup. We used the standard library for shared memory multiprocessing, OpenMP. When parallelizing $\texttt{for}$ loops, we used the standard compiler directive $\texttt{pragma omp parallel}$, designating shared matrices and iterators appropriately with the $\texttt{shared}$ and $\texttt{private}$ keywords.</p>
 
-            <h4>What we tried</h4>
             <p>Initially, we tried applying OpenMP pragmas to every easily parallelizable section of the code. We realized this created too much parallel overhead, since a lot of the operations we aimed to parallelize involved $3 \times 3$ matrices (matrix-matrix multiplication, vector-matrix multiplication, etc.), and the cost of starting up threads comparing to the speedup from distributing the work simply was not worth it.</p>
 
-            <h4>What we improved on</h4>
             <p>With the serial implementation of BFS in place, we were simply able to apply an OpenMP pragma to a loop in order to quickly iterate through the particles in the lattice. Additionally, we were able to quickly iterate through printing the probabilities of transitioning to positions by parallelizing that portion (this was especially simple since we don't care about the order in which we print things after they are calculated!).
 
             <hr/>
@@ -164,6 +164,10 @@
                 </figure>
             </div>
 
+            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup.</p>
+
+            <hr/>
+
             <h3 id="advanced-features">Advanced features</h3>
             <h4>Semiring model</h4>
             <p>One of the advanced features we used was to convert our initially recursive implementation of BFS to a model similar to the semiring model. The initial, immediate advantage to this was that we could convert a recursive implementation into a serial one, which is an advantage in the ease of parallelization.</p>
@@ -173,7 +177,11 @@
             <p>However, there are several important takeaways from the boolean semiring model that we can use to construct our own implementation of BFS. One of them is that we <i>can</i> use a semiring - the semiring of $([0, \infty], +, \times)$, which will generally cover the cases we require for our lattice traversal. Another very important idea is the construction of a graph as a matrix. Initially, we were considering tree traversal in a context conducive to human understanding - traversing down a branch of the tree. But by converting our tree to a matrix representation, we were able to gain insight on how to construct a serial implementation of BFS and therefore parallelize this operation.</p>
 
             <h4>Kinetic Monte Carlo</h4>
-            <p>The naive BFS traversal does not take into account the particle-particle Coulomb interactions that may be occurring as a defect moves through the lattice. In order to take into account this process, we use a simulation called kinetic Monte Carlo, which simulates some process with known transition rates as evolving through time.</p>
+            <p>The naive BFS traversal does not take into account the particle-particle Coulomb interactions that may be occurring as a defect moves through the lattice. In order to take into account this process, we use a simulation called kinetic Monte Carlo, which simulates some process with known transition rates as evolving through time. We need to map out all transitions and obtain their rates. Then, we construct a cumulative vector of transition rates. We choose a random number between 0 and 1 and multiply by the sum of the transition rates, and choose the transition corresponding to the element of the cumulative vector mapped to by this multiplication. Then we update time and restart the process at the new position. This is analogous to the following update to the naive method of finding transition rates:</p>
+
+            <p>
+            $$r = \nu\exp(-\frac{E_{act}}{k_{B}T}) \rightarrow \nu\exp(-\frac{(E_{act} + \Delta\phi(\vec{r}))}{k_{B}T})$$
+            </p>
 
             <h3 id="references">References</h3>
             <ul>
