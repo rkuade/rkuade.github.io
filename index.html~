@@ -95,7 +95,7 @@
             <hr/>
 
             <h3 id="interim-report">Interim Report</h3>
-            <p>We were able to successfully get results for $N=5$, implying that we were able to successfully run BFS on a 12-ary tree with a depth of 5.</p>
+            <p>We were able to successfully get results for $N=4$, implying that we were able to successfully run BFS on a 12-ary tree with a depth of 4.</p>
 
             <div class="figure-wrapper">
                 <figure>
