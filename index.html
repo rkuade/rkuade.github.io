@@ -19,12 +19,14 @@
                 <li><a href="#introduction">Introduction</a></li>
                 <li><a href="#background">Background</a></li>
                 <li><a href="#computational-methods">Computational Methods</a></li>
-                <li><a href="#interim-report">Interim Report</a></li>
+                <li><a href="#problem-solution">Problem Solution</a></li>
                 <li><a href="#parallelization">Parallelization of BFS</a></li>
                 <li><a href="#spmd-shared">SPMD shared memory with OpenMP</a></li>
                 <li><a href="#hybrid-spmd">Hybrid SPMD with OpenMP-MPI</a></li>
                 <li><a href="#advanced-features">Advanced features</a></li>
                 <li><a href="#references">References</a></li>
+                <p>-</p>
+                <li><a href="https://github.com/rkuade/CS205-project" target="_blank">Project repository</a></li>
             </ul>
         </div>
         <div class="wrapper">
@@ -33,7 +35,7 @@
             <h4>Professor Manju Manjunathaiah</h4>
 
             <h3 id="introduction">Introduction</h3>
-            <p>The promise of the nitrogen-vacany (NV) center in diamond as a system for implementing memory storage for a quantum computer has spawned interest in defect centers in related materials such as SiC. SiC is particularly interesting as it is a polymorphic material, exhibiting about 250 known polytypes, which imbues it with a degree of freedom unavailable in diamond.</p>
+            <p>The promise of the nitrogen-vacancy (NV) center in diamond as a system for implementing memory storage for a quantum computer has spawned interest in defect centers in related materials such as SiC. SiC is particularly interesting as it is a polymorphic material, exhibiting about 250 known polytypes, which imbues it with a degree of freedom unavailable in diamond.</p>
 
             <p>The three most common polytypes, 4H- and 6H-SiC and 3C-SiC, all have defects with spin relaxation times ranging from 8 to 24 ms at 20 K (with 4H-SiC being the highest) and coherence persists up to room temperature<sup>[<a href="#ref1">1</a>]</sup>. In addition to the long spin coherence, a key feature is the ability to optically address (write in and read out) the spin states. However, much of the luminescence or emission of the defects is diverted into transitions involving scattering processes (and is not purely from the desired spin transitions) at ambient temperatures. Indeed, only about 4% of luminescence is from the desired transitions<sup>[<a href="#ref2">2</a>]</sup>.</p>
 
@@ -94,8 +96,24 @@
 
             <hr/>
 
+<<<<<<< HEAD
             <h3 id="interim-report">Interim Report</h3>
             <p>We were able to successfully get results for $N=5$, implying that we were able to successfully run BFS on a 12-ary tree with a depth of 5.</p>
+=======
+            <h3 id="problem-solution">Problem Solution</h3>
+            <p>We require multiple pre-determined constants (such as those for transition rates, distances in the lattice cell) before beginning our calculations. Once we have those constants initialized, we can begin work. Transitions in the lattice can go 1 of 12 ways - there are 3 possible transitions out of plane in the upwards direction, 3 possible transitions out of plane in the downwards direction, and 6 possible transitions in the plane. We use a set of rotation matrices determined from several Euler angles in order to calculate movement in any of these directions.</p>
+
+            <p>Past this point, we fill a matrix $\texttt{A}$ with values corresponding to the vector values for a particular transition, the probability of transitioning, and the time of transitioning. From here, we run a breadth-first search (BFS) from each of the particles, because a defect ending up at a final position in the lattice could have come from a number of initial positions.</p>
+
+            <p>Finally, we check whether or not a transition to a location that we calculated is valid, and print out the corresponding $x, y, z$ coordinates, the probability of transitioning to that location, and the time passed.</p>
+
+            <hr/>
+
+            <h3 id="parallelization">Parallelization of BFS</h3>
+            <p>We initially used a recursive crawling method for performing the breadth-first search (BFS) required to map probabilities in the lattice. This method involved traversing to a particular position in the lattice and directly running our BFS function from that position (a recursive call). We found that applying OpenMP directives to the recursive portion was difficult, especially since the probability that a defect appeared in a particular position on the lattice likely depended on other probabilities which may not have been updated.</p>
+
+            <p>Instead, we aimed to change the model of how we traverse through the 12-ary tree. We were considering switching entirely to the matrix-vector multiplication method of BFS with the boolean semiring model, but instead we opted for a serial traversal of BFS that still adopted the semiring model. We use two different semirings - one for updating the probability and one for updating the position and time steps. This semiring model is described in more detail in the advanced features section. This made it easier for us to directly write parallelizing pragmas because our serial implementation resulted in several $\texttt{for}$ loops which are simple to parallelize.</p>
+>>>>>>> 66dc0c73d6983203c54dc6567ef52849f237a5a6
 
             <div class="figure-wrapper">
                 <figure>
@@ -115,7 +133,27 @@
                     <img width="400" src="./images/xz.gif">
                     <figcaption>Figure IV: averaged probability map $(xz)$</figcaption>
                 </figure>
+            </div>
 
+            <p>The .gifs were obtained by calculating the probability map for a system size of $\frac{12^{6}-1}{11}$ different pathways. Figure II shows the preprocessed data for the transitions that were calculated. Figures III and IV show the same data, except averaged over the two types of transitions.</p>
+
+            <hr/>
+
+            <h3 id="spmd-shared">SPMD shared memory with OpenMP</h3>
+            <p>We used the SPMD paradigm of parallelism in order to achieve initial speedup. We used the standard library for shared memory multiprocessing, OpenMP. When parallelizing $\texttt{for}$ loops, we used the standard compiler directive $\texttt{pragma omp parallel}$, designating shared matrices and iterators appropriately with the $\texttt{shared}$ and $\texttt{private}$ keywords.</p>
+
+            <p>Initially, we tried applying OpenMP pragmas to every easily parallelizable section of the code. We realized this created too much parallel overhead, since a lot of the operations we aimed to parallelize involved $3 \times 3$ matrices (matrix-matrix multiplication, vector-matrix multiplication, etc.), and the cost of starting up threads comparing to the speedup from distributing the work simply was not worth it.</p>
+
+            <p>With the serial implementation of BFS in place, we were simply able to apply an OpenMP pragma to a loop in order to quickly iterate through the particles in the lattice. Additionally, we were able to quickly iterate through printing the probabilities of transitioning to positions by parallelizing that portion (this was especially simple since we don't care about the order in which we print things after they are calculated!).
+
+            <hr/>
+
+            <h3 id="hybrid-spmd">Hybrid SPMD with OpenMP-MPI</h3>
+            <p>We used the common hybrid model of combining message passing with MPI with OpenMP. By splitting the work that needs to be done across several nodes, we can achieve further speedup.</p>
+            <p>In our particular usage of MPI, we use $\texttt{MPI_Isend}$ calls with the $\texttt{swtcher}$ variable to communicate to a node that calculations corresponding to a particular transition (as determined by the $\texttt{swtcher}$ variable) needs to be done.</p>
+            <p>Once all of the calculations are done, if we are in the root process, we print out the probabilities of transitioning to a particular location.</p>
+
+            <div class="figure-wrapper">
                 <figure>
                     <img width="400" src="./images/efficiency.png">
                     <figcaption>Figure V: efficiency</figcaption>
@@ -131,31 +169,24 @@
                 </figure>
             </div>
 
-            <p>We initially ran BFS in the lattice with a recursive call, meaning we would traverse from one particle in the lattice to another, run BFS on the newly discovered particle, and so on. We were able to get some speedup on this initial model by adding an OpenMP for loop pragma to an area where we calculated cumulative probability of transitions. Additionally, we were able to get speedup by hand-unrolling the matrix-matrix and matrix-vector multiplications we were performing.</p>
-
-            <p>The .gifs were obtained by calculating the probability map for a system size of $\frac{12^{6}-1}{11}$ different pathways. Figure II shows the preprocessed data for the transitions that were calculated. Figures III and IV show the same data, except averaged over the two types of transitions.</p>
-
-            <p>We are currently working towards moving to using a semiring model for BFS, as we were able to transform the recursive call of BFS into a serial call. Our semiring will be analogous to the ring $([0, \infty], +, \times)$.</p>
+            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup.</p>
 
             <hr/>
 
-            <h3 id="parallelization">Parallelization of BFS</h3>
-            <p>We initially used a recursive crawling method for performing the breadth-first search (BFS) required to map probabilities in the lattice. This method involved traversing to a particular position in the lattice and directly running our BFS function from that position (a recursive call). We found that applying OpenMP directives to the recursive portion was difficult, especially since the probability that a defect appeared in a particular position on the lattice likely depended on other probabilities which may not have been updated.</p>
-
-            <p>Instead, we aimed to change the model of how we traverse through the 12-ary tree. We were considering switching entirely to the matrix-vector multiplication method of BFS with the boolean semiring model, but instead we opted for a serial traversal of BFS that still adopted the semiring model. We use two different semirings - one for updating the probability and one for updating the position and time steps. This semiring model is described in more detail in the advanced features section. This made it easier for us to directly write parallelizing pragmas because our serial implementation resulted in several $\texttt{for}$ loops which are simple to parallelize.</p>
-
-            <h3 id="spmd-shared">SPMD shared memory with OpenMP</h3>
-            <p>We used the SPMD paradigm of parallelism in order to achieve initial speedup. We used the standard library for shared memory multiprocessing, OpenMP. When parallelizing $\texttt{for}$ loops, we used the standard compiler directive $\texttt{pragma omp parallel}$, designating shared matrices and iterators appropriately with the $\texttt{shared}$ and $\texttt{private}$ keywords.</p>
-
-            <h3 id="hybrid-spmd">Hybrid SPMD with OpenMP-MPI</h3>
-            <p>We used the common hybrid model of combining message passing with MPI with OpenMP. By splitting the work that needs to be done across several nodes, we can achieve further speedup.</p>
-
             <h3 id="advanced-features">Advanced features</h3>
+            <h4>Semiring model</h4>
             <p>One of the advanced features we used was to convert our initially recursive implementation of BFS to a model similar to the semiring model. The initial, immediate advantage to this was that we could convert a recursive implementation into a serial one, which is an advantage in the ease of parallelization.</p>
 
             <p>A disclaimer is that we cannot use the pure boolean semiring $(\{0, 1\}, |, \&)$. The reason for this is that the boolean semiring is used for determining whether or not we are able to traverse to a particular node in BFS. We care about more than that - we care about the probability of transition to a certain point, the coordinates associated with those points, and the time steps required to reach those points. Because of this, using a pure semiring is not feasible.</p>
 
             <p>However, there are several important takeaways from the boolean semiring model that we can use to construct our own implementation of BFS. One of them is that we <i>can</i> use a semiring - the semiring of $([0, \infty], +, \times)$, which will generally cover the cases we require for our lattice traversal. Another very important idea is the construction of a graph as a matrix. Initially, we were considering tree traversal in a context conducive to human understanding - traversing down a branch of the tree. But by converting our tree to a matrix representation, we were able to gain insight on how to construct a serial implementation of BFS and therefore parallelize this operation.</p>
+
+            <h4>Kinetic Monte Carlo</h4>
+            <p>The naive BFS traversal does not take into account the particle-particle Coulomb interactions that may be occurring as a defect moves through the lattice. In order to take into account this process, we use a simulation called kinetic Monte Carlo, which simulates some process with known transition rates as evolving through time. We need to map out all transitions and obtain their rates. Then, we construct a cumulative vector of transition rates. We choose a random number between 0 and 1 and multiply by the sum of the transition rates, and choose the transition corresponding to the element of the cumulative vector mapped to by this multiplication. Then we update time and restart the process at the new position. This is analogous to the following update to the naive method of finding transition rates:</p>
+
+            <p>
+            $$r = \nu\exp(-\frac{E_{act}}{k_{B}T}) \rightarrow \nu\exp(-\frac{(E_{act} + \Delta\phi(\vec{r}))}{k_{B}T})$$
+            </p>
 
             <h3 id="references">References</h3>
             <ul>
