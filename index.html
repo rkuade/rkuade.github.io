@@ -96,10 +96,6 @@
 
             <hr/>
 
-<<<<<<< HEAD
-            <h3 id="interim-report">Interim Report</h3>
-            <p>We were able to successfully get results for $N=5$, implying that we were able to successfully run BFS on a 12-ary tree with a depth of 5.</p>
-=======
             <h3 id="problem-solution">Problem Solution</h3>
             <p>We require multiple pre-determined constants (such as those for transition rates, distances in the lattice cell) before beginning our calculations. Once we have those constants initialized, we can begin work. Transitions in the lattice can go 1 of 12 ways - there are 3 possible transitions out of plane in the upwards direction, 3 possible transitions out of plane in the downwards direction, and 6 possible transitions in the plane. We use a set of rotation matrices determined from several Euler angles in order to calculate movement in any of these directions.</p>
 
@@ -113,7 +109,6 @@
             <p>We initially used a recursive crawling method for performing the breadth-first search (BFS) required to map probabilities in the lattice. This method involved traversing to a particular position in the lattice and directly running our BFS function from that position (a recursive call). We found that applying OpenMP directives to the recursive portion was difficult, especially since the probability that a defect appeared in a particular position on the lattice likely depended on other probabilities which may not have been updated.</p>
 
             <p>Instead, we aimed to change the model of how we traverse through the 12-ary tree. We were considering switching entirely to the matrix-vector multiplication method of BFS with the boolean semiring model, but instead we opted for a serial traversal of BFS that still adopted the semiring model. We use two different semirings - one for updating the probability and one for updating the position and time steps. This semiring model is described in more detail in the advanced features section. This made it easier for us to directly write parallelizing pragmas because our serial implementation resulted in several $\texttt{for}$ loops which are simple to parallelize.</p>
->>>>>>> 66dc0c73d6983203c54dc6567ef52849f237a5a6
 
             <div class="figure-wrapper">
                 <figure>
@@ -167,9 +162,23 @@
                     <img width="400" src="./images/throughput.png">
                     <figcaption>Figure VII: throughput</figcaption>
                 </figure>
+
+                <figure>
+                    <img width="400" src="./images/efficiency_s.png">
+                    <figcaption>Figure VIII: efficiency</figcaption>
+                </figure>
+                <figure>
+                    <img width="400" src="./images/speedup_s.png">
+                    <figcaption>Figure IX: speedup</figcaption>
+                </figure>
+
+                <figure>
+                    <img width="400" src="./images/throughput_s.png">
+                    <figcaption>Figure X: throughput</figcaption>
+                </figure>
             </div>
 
-            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup.</p>
+            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup. Figures V through VII give us the efficiency, speedup, and throughput for a variable number of cores given a fixed problem size, while figures VIII through X give us the efficiency, speedup, and throughput for a fixed number of cores given a variable problem size. In all of these graphs, the OMP-MPI hybrid solution is seen to be around as good as, if not far outperforming, the OpenMP solution.</p>
 
             <hr/>
 
