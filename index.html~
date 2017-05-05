@@ -41,7 +41,7 @@
 
             <p>A potential solution is to place the defects near cavities on resonance with the desired transitions<sup>[<a href="#ref3">3</a>]</sup>. Positioning defects, however, is a non-trivial endeavor. The defects would be created at roughly the desired location using the process of focused ion beam implantation, but this process creates a lot of damage. In order to heal the damage the sample is annealed, causing the defects to diffuse and some to be lost through conversion to other species. The purpose of this study is then to assess the probability that the negatively charged silicon vacancy defect in 4H-SiC would be optimally positioned and exist given a certain initial position and a certain number of time steps.</p>
 
-            <p>\textbf{In Short...} We can fire beams at a crystal and create holes in it and if we heal the crystal by heating and cooling, some of these holes move. In diamond, analogous kinds of holes have the potential to be used as a quantum storage device. By modelling this movement in SiC, we can gain insight into memory storage for a quantum computer!</p>
+            <p><strong>In Short...</strong> We can fire beams at a crystal and create holes in it and if we heal the crystal by heating and cooling, some of these holes move. In diamond, analogous kinds of holes have the potential to be used as a quantum storage device. By modelling this movement in SiC, we can gain insight into memory storage for a quantum computer!</p>
 
             <hr/>
 
