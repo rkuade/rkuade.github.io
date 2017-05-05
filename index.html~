@@ -37,9 +37,11 @@
             <h3 id="introduction">Introduction</h3>
             <p>The promise of the nitrogen-vacancy (NV) center in diamond as a system for implementing memory storage for a quantum computer has spawned interest in defect centers in related materials such as SiC. SiC is particularly interesting as it is a polymorphic material, exhibiting about 250 known polytypes, which imbues it with a degree of freedom unavailable in diamond.</p>
 
-            <p>The three most common polytypes, 4H- and 6H-SiC and 3C-SiC, all have defects with spin relaxation times ranging from 8 to 24 ms at 20 K (with 4H-SiC being the highest) and coherence persists up to room temperature<sup>[<a href="#ref1">1</a>]</sup>. In addition to the long spin coherence, a key feature is the ability to optically address (write in and read out) the spin states. However, much of the luminescence or emission of the defects is diverted into transitions involving scattering processes (and is not purely from the desired spin transitions) at ambient temperatures. Indeed, only about 4% of luminescence is from the desired transitions<sup>[<a href="#ref2">2</a>]</sup>.</p>
+            <p>The three most common polytypes, 4H- and 6H-SiC and 3C-SiC, all have defects with spin relaxation times ranging from 8 to 24 ms at 20 K (with 4H-SiC being the highest) and coherence persists up to room temperature<sup>[<a href="#ref1">1</a>]</sup>. In addition to the long spin coherence, a key feature is the ability to optically address (write in and read out) the spin states. However, much of the luminescence or emission of the defects is diverted into transitions involving scattering processes (and is not purely from the desired spin transitions) at ambient temperatures. Indeed, only about 1% of luminescence is from the desired transitions<sup>[<a href="#ref2">2</a>]</sup>.</p
 
             <p>A potential solution is to place the defects near cavities on resonance with the desired transitions<sup>[<a href="#ref3">3</a>]</sup>. Positioning defects, however, is a non-trivial endeavor. The defects would be created at roughly the desired location using the process of focused ion beam implantation, but this process creates a lot of damage. In order to heal the damage the sample is annealed, causing the defects to diffuse and some to be lost through conversion to other species. The purpose of this study is then to assess the probability that the negatively charged silicon vacancy defect in 4H-SiC would be optimally positioned and exist given a certain initial position and a certain number of time steps.</p>
+
+            <p>\textbf{In Short...} We can fire beams at a crystal and create holes in it and if we heal the crystal by heating and cooling, some of these holes move. In diamond, analogous kinds of holes have the potential to be used as a quantum storage device. By modelling this movement in SiC, we can gain insight into memory storage for a quantum computer!</p>
 
             <hr/>
 
@@ -178,7 +180,7 @@
                 </figure>
             </div>
 
-            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which lead to greater speedup. Figures V through VII give us the efficiency, speedup, and throughput for a variable number of cores given a fixed problem size, while figures VIII through X give us the efficiency, speedup, and throughput for a fixed number of cores given a variable problem size. In all of these graphs, the OMP-MPI hybrid solution is seen to be around as good as, if not far outperforming, the OpenMP solution.</p>
+            <p>As we can see from Figure VII, the serial BFS solution might have been slower than the recursive solution, but the serial approach to BFS made it easier for us to utilize the hybrid OpenMP-MPI model which led to greater speedup. Figures V through VII give us the efficiency, speedup, and throughput for a variable number of cores given a fixed problem size, while figures VIII through X give us the efficiency, speedup, and throughput for a fixed number of cores given a variable problem size. In all of these graphs, the OMP-MPI hybrid solution is seen to be around as good as, if not far outperforming, the OpenMP solution.</p>
 
             <hr/>
 
@@ -189,6 +191,13 @@
             <p>A disclaimer is that we cannot use the pure boolean semiring $(\{0, 1\}, |, \&)$. The reason for this is that the boolean semiring is used for determining whether or not we are able to traverse to a particular node in BFS. We care about more than that - we care about the probability of transition to a certain point, the coordinates associated with those points, and the time steps required to reach those points. Because of this, using a pure semiring is not feasible.</p>
 
             <p>However, there are several important takeaways from the boolean semiring model that we can use to construct our own implementation of BFS. One of them is that we <i>can</i> use a semiring - the semiring of $([0, \infty], +, \times)$, which will generally cover the cases we require for our lattice traversal. Another very important idea is the construction of a graph as a matrix. Initially, we were considering tree traversal in a context conducive to human understanding - traversing down a branch of the tree. But by converting our tree to a matrix representation, we were able to gain insight on how to construct a serial implementation of BFS and therefore parallelize this operation.</p>
+
+            <div class="figure-wrapper">
+                <figure>
+                    <img width="400" src="./images/efficiency.png">
+                    <figcaption>Figure XI: speedup of semi-ring</figcaption>
+                </figure>
+            </div>
 
             <h4>Kinetic Monte Carlo</h4>
             <p>The naive BFS traversal does not take into account the particle-particle Coulomb interactions that may be occurring as a defect moves through the lattice. In order to take into account this process, we use a simulation called kinetic Monte Carlo, which simulates some process with known transition rates as evolving through time. We need to map out all transitions and obtain their rates. Then, we construct a cumulative vector of transition rates. We choose a random number between 0 and 1 and multiply by the sum of the transition rates, and choose the transition corresponding to the element of the cumulative vector mapped to by this multiplication. Then we update time and restart the process at the new position. This is analogous to the following update to the naive method of finding transition rates:</p>
@@ -204,7 +213,7 @@
                 </figure>
                 <figure>
                     <img width="400" src="./images/vacancies_2.png">
-                    <figcaption>Figure XII: vacancies after 10s</figcaption>
+                    <figcaption>Figure XII: vacancies after 5s</figcaption>
                 </figure>
             </div>
 
