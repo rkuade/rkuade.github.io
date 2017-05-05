@@ -194,7 +194,7 @@
 
             <div class="figure-wrapper">
                 <figure>
-                    <img width="400" src="./images/efficiency.png">
+                    <img width="400" src="./images/speedup_m.png">
                     <figcaption>Figure XI: speedup of semi-ring</figcaption>
                 </figure>
             </div>
