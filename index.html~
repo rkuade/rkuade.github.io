@@ -217,7 +217,7 @@
                 </figure>
             </div>
 
-            <p>The plots above show the probability map of the vacancies constructed using the kinetic Monte Carlo simulation after 0.5s and 10s. The intensity of the spots correspond to the probability that a vacancy will appear in that spot.</p>
+            <p>The plots above show the probability map of the vacancies constructed using the kinetic Monte Carlo simulation after 0.5s and 5s. The intensity of the spots correspond to the probability that a vacancy will appear in that spot.</p>
 
             <h3 id="references">References</h3>
             <ul>

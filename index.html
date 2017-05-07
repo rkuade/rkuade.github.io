@@ -203,7 +203,7 @@
             <p>The naive BFS traversal does not take into account the particle-particle Coulomb interactions that may be occurring as a defect moves through the lattice. In order to take into account this process, we use a simulation called kinetic Monte Carlo, which simulates some process with known transition rates as evolving through time. We need to map out all transitions and obtain their rates. Then, we construct a cumulative vector of transition rates. We choose a random number between 0 and 1 and multiply by the sum of the transition rates, and choose the transition corresponding to the element of the cumulative vector mapped to by this multiplication. Then we update time and restart the process at the new position. This is analogous to the following update to the naive method of finding transition rates:</p>
 
             <p>
-            $$r = \nu\exp(-\frac{E_{act}}{k_{B}T}) \rightarrow \nu\exp(-\frac{(E_{act} + \Delta\phi(\vec{r}))}{k_{B}T})$$
+            $$r = \nu\exp\left(-\frac{E_{act}}{k_{B}T}\right) \rightarrow \nu\exp\left(-\frac{(E_{act} + \Delta\phi(\vec{r}))}{k_{B}T}\right)$$
             </p>
 
             <div class="figure-wrapper">
